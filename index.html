@@ -12,270 +12,210 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
                    "Noto Sans JP", sans-serif;
-      color: #18324a;
+      color: #17364a;
       background:
-        radial-gradient(circle at top left, rgba(133, 220, 255, 0.35), transparent 32%),
-        linear-gradient(180deg, #fafdff 0%, #eefaff 100%);
+        radial-gradient(circle at top right, rgba(115, 214, 255, .30), transparent 30%),
+        linear-gradient(180deg, #ffffff 0%, #eefaff 100%);
     }
 
-    .page {
-      width: min(1120px, 94%);
-      margin: 0 auto;
-      padding: 32px 0 60px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 42px;
-      gap: 20px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      font-size: 22px;
-      background: linear-gradient(135deg, #7ddcff, #b8efff);
-      box-shadow: 0 10px 30px rgba(72, 190, 235, 0.25);
-    }
-
-    .brand-text small {
-      display: block;
-      font-size: 10px;
-      color: #58a9c9;
-      letter-spacing: 3px;
-      font-weight: 700;
-    }
-
-    .brand-text strong {
-      font-size: 18px;
-      color: #16354c;
+    .wrap {
+      width: min(1180px, 94%);
+      margin: auto;
+      padding: 24px 0 60px;
     }
 
     .hero {
-      text-align: center;
-      margin-bottom: 34px;
+      position: relative;
+      min-height: 390px;
+      overflow: hidden;
+      border-radius: 30px;
+      padding: 55px;
+      background:
+        linear-gradient(135deg, #ffffff 0%, #e8f9ff 60%, #c9f0ff 100%);
+      border: 1px solid #cfeef8;
+      box-shadow: 0 25px 60px rgba(73, 169, 205, 0.15);
+      display: flex;
+      align-items: center;
     }
 
-    .eyebrow {
-      color: #4eb9e5;
+    .hero-text {
+      position: relative;
+      z-index: 2;
+      max-width: 560px;
+    }
+
+    .tag {
+      color: #49afe0;
       font-size: 12px;
       font-weight: 900;
-      letter-spacing: 5px;
-      margin-bottom: 12px;
+      letter-spacing: 4px;
+      margin-bottom: 10px;
     }
 
-    .hero h1 {
+    h1 {
+      font-size: clamp(42px, 7vw, 76px);
+      line-height: .95;
       margin: 0;
-      font-size: clamp(38px, 7vw, 68px);
-      line-height: 0.98;
-      font-weight: 950;
-      color: #15344a;
-      letter-spacing: -1px;
+      color: #16384e;
     }
 
-    .hero h1 span {
-      background: linear-gradient(90deg, #164763, #4fbfe8, #83dfff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    h1 span {
+      color: #55bee9;
     }
 
     .hero p {
-      margin: 18px auto 0;
-      max-width: 620px;
-      color: #66808f;
-      font-size: 14px;
+      color: #668491;
       line-height: 1.8;
+      margin-top: 20px;
     }
 
-    .next-card {
-      max-width: 820px;
-      margin: 0 auto 30px;
-      padding: 22px 24px;
-      background: rgba(255,255,255,0.9);
-      border: 1px solid #c7edf9;
-      border-radius: 22px;
-      box-shadow: 0 18px 50px rgba(77, 179, 216, 0.12);
-      text-align: center;
-    }
-
-    .next-label {
-      color: #4aaed3;
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 3px;
-      margin-bottom: 8px;
-    }
-
-    .next-title {
-      font-size: clamp(21px, 4vw, 29px);
-      font-weight: 900;
-      color: #17364c;
-    }
-
-    .next-sub {
-      margin-top: 8px;
-      color: #7b95a3;
-      font-size: 13px;
+    .hero-img {
+      position: absolute;
+      right: -20px;
+      bottom: -25px;
+      width: min(470px, 44vw);
+      z-index: 1;
+      filter: drop-shadow(0 16px 30px rgba(45, 120, 150, .18));
     }
 
     .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 20px;
       margin: 38px 0 14px;
     }
 
+    .section-title small {
+      color: #59b9dc;
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+
     .section-title h2 {
-      margin: 0;
-      font-size: 24px;
-      color: #16364d;
+      margin: 5px 0 0;
+      font-size: 28px;
     }
 
-    .section-title span {
-      font-size: 12px;
-      color: #7f9ba9;
-    }
-
-    .calendar-shell {
-      overflow: hidden;
+    .today-card {
+      background: #fff;
+      border: 2px solid #aee7f8;
       border-radius: 24px;
-      background: #ffffff;
-      border: 1px solid #cdeef8;
-      box-shadow: 0 25px 70px rgba(70, 170, 205, 0.14);
+      overflow: hidden;
+      box-shadow: 0 18px 45px rgba(62, 163, 202, .12);
     }
 
-    .calendar-top {
+    .today-head {
+      padding: 18px 22px;
+      background: linear-gradient(90deg, #dff7ff, #f5fdff);
+      font-weight: 900;
+      color: #277da0;
+    }
+
+    .today-calendar {
+      width: 100%;
+      height: 260px;
+      border: 0;
+      display: block;
+    }
+
+    .calendar-card {
+      background: #fff;
+      border: 1px solid #ccebf5;
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: 0 22px 55px rgba(65, 160, 195, .12);
+    }
+
+    .calendar-bar {
+      padding: 18px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 17px 20px;
-      background: linear-gradient(90deg, #f7fdff, #eaf9ff);
-      border-bottom: 1px solid #d7f1f9;
+      background: linear-gradient(90deg, #effbff, #dff6ff);
+      border-bottom: 1px solid #d3eef6;
     }
 
-    .calendar-top strong {
-      font-size: 14px;
-      color: #1d4961;
+    .calendar-bar strong {
+      font-size: 15px;
     }
 
-    .live-dot {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
+    .auto {
       font-size: 12px;
-      color: #63a9c3;
+      color: #57a9c5;
     }
 
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #56c8ef;
-      box-shadow: 0 0 12px rgba(86, 200, 239, 0.7);
-    }
-
-    iframe {
+    .month-calendar {
       width: 100%;
-      min-height: 740px;
+      height: 760px;
       border: 0;
       display: block;
-      background: white;
     }
 
     .info-grid {
-      margin-top: 28px;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 14px;
+      margin-top: 24px;
     }
 
-    .info-card {
-      background: rgba(255,255,255,0.88);
-      border: 1px solid #d7f0f8;
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 12px 30px rgba(89, 170, 198, 0.08);
+    .info {
+      background: rgba(255,255,255,.9);
+      border: 1px solid #d8eff6;
+      border-radius: 20px;
+      padding: 20px;
     }
 
-    .info-card .icon {
-      font-size: 23px;
-      margin-bottom: 9px;
-    }
-
-    .info-card strong {
+    .info strong {
       display: block;
       margin-bottom: 6px;
-      color: #1d4056;
-      font-size: 14px;
     }
 
-    .info-card p {
+    .info p {
       margin: 0;
-      color: #7994a2;
       font-size: 12px;
       line-height: 1.7;
+      color: #748f9b;
     }
 
     footer {
-      margin-top: 44px;
-      padding-top: 26px;
-      border-top: 1px solid #d8edf4;
+      margin-top: 40px;
       text-align: center;
-      color: #8ca6b2;
+      color: #8ca5b0;
       font-size: 11px;
-      letter-spacing: 1px;
     }
 
     @media (max-width: 760px) {
-      .page {
+      .wrap {
         width: 100%;
-        padding: 20px 10px 40px;
+        padding: 10px 10px 35px;
       }
 
-      .topbar {
-        margin-bottom: 30px;
-      }
-
-      .hero h1 {
-        font-size: 38px;
-      }
-
-      .next-card {
-        border-radius: 18px;
-        padding: 18px 14px;
-      }
-
-      .section-title {
-        flex-direction: column;
+      .hero {
+        min-height: 430px;
+        padding: 30px 24px;
         align-items: flex-start;
-        gap: 4px;
       }
 
-      .calendar-shell {
-        border-radius: 17px;
+      .hero-text {
+        max-width: 100%;
       }
 
-      .calendar-top {
-        padding: 14px;
+      h1 {
+        font-size: 43px;
       }
 
-      iframe {
-        min-height: 650px;
+      .hero-img {
+        width: 300px;
+        right: -60px;
+        bottom: -10px;
+        opacity: .95;
+      }
+
+      .today-calendar {
+        height: 300px;
+      }
+
+      .month-calendar {
+        height: 680px;
       }
 
       .info-grid {
@@ -286,94 +226,91 @@
 </head>
 
 <body>
-  <div class="page">
-
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-icon">🎮</div>
-
-        <div class="brand-text">
-          <small>OFFICIAL</small>
-          <strong>うめけん</strong>
-        </div>
-      </div>
-    </header>
+  <div class="wrap">
 
     <section class="hero">
-      <div class="eyebrow">UMEKEN</div>
 
-      <h1>
-        <span>STREAM<br>SCHEDULE</span>
-      </h1>
+      <div class="hero-text">
+        <div class="tag">UMEKEN OFFICIAL</div>
 
-      <p>
-        ゲーム配信・企画・歌枠など、
-        うめけんの配信予定をまとめています。<br>
-        スケジュールは随時更新されます。
-      </p>
-    </section>
+        <h1>
+          STREAM<br>
+          <span>SCHEDULE</span>
+        </h1>
 
-    <section class="next-card">
-      <div class="next-label">NEXT STREAM</div>
-
-      <div class="next-title">
-        最新の配信予定はカレンダーをチェック！
+        <p>
+          うめけんのゲーム配信・企画・歌枠などの
+          最新スケジュールを掲載しています。
+        </p>
       </div>
 
-      <div class="next-sub">
-        配信時間・内容は変更になる場合があります
-      </div>
+      <img
+        src="b02＿背景透過.png"
+        alt="うめけん"
+        class="hero-img">
     </section>
+
 
     <div class="section-title">
-      <h2>配信スケジュール</h2>
-      <span>Google Calendarで随時更新</span>
+      <small>NEXT STREAM</small>
+      <h2>今日〜直近の配信予定</h2>
     </div>
 
-    <section class="calendar-shell">
+    <section class="today-card">
 
-      <div class="calendar-top">
-        <strong>UMEKEN CALENDAR</strong>
-
-        <div class="live-dot">
-          <span class="dot"></span>
-          LIVE UPDATE
-        </div>
+      <div class="today-head">
+        🎮 最新の配信予定
       </div>
 
       <iframe
-        src="https://calendar.google.com/calendar/embed?src=589eb655b73cf456af1f6785374a69ebc99ae26cc5df0d868e1c48576ccf6a8b%40group.calendar.google.com&ctz=Asia%2FTokyo"
-        scrolling="no">
+        class="today-calendar"
+        src="https://calendar.google.com/calendar/embed?src=589eb655b73cf456af1f6785374a69ebc99ae26cc5df0d868e1c48576ccf6a8b%40group.calendar.google.com&ctz=Asia%2FTokyo&mode=AGENDA&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0">
       </iframe>
 
     </section>
 
+
+    <div class="section-title">
+      <small>MONTHLY CALENDAR</small>
+      <h2>今月の配信予定</h2>
+    </div>
+
+    <section class="calendar-card">
+
+      <div class="calendar-bar">
+        <strong>📅 UMEKEN CALENDAR</strong>
+        <span class="auto">自動更新</span>
+      </div>
+
+      <iframe
+        class="month-calendar"
+        src="https://calendar.google.com/calendar/embed?src=589eb655b73cf456af1f6785374a69ebc99ae26cc5df0d868e1c48576ccf6a8b%40group.calendar.google.com&ctz=Asia%2FTokyo&mode=MONTH&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0">
+      </iframe>
+
+    </section>
+
+
     <section class="info-grid">
 
-      <div class="info-card">
-        <div class="icon">📅</div>
-        <strong>随時更新</strong>
+      <div class="info">
+        <strong>📅 随時更新</strong>
         <p>
           配信予定が決まり次第、
-          このページのカレンダーに追加されます。
+          Googleカレンダーから自動反映されます。
         </p>
       </div>
 
-      <div class="info-card">
-        <div class="icon">⏰</div>
-        <strong>時間変更あり</strong>
+      <div class="info">
+        <strong>⏰ 時間変更あり</strong>
         <p>
-          開始時間や内容が変更になる場合があります。
-          最新情報をご確認ください。
+          配信時間や内容は変更になる場合があります。
         </p>
       </div>
 
-      <div class="info-card">
-        <div class="icon">🎮</div>
-        <strong>ゲーム・歌・企画</strong>
+      <div class="info">
+        <strong>🎮 配信内容</strong>
         <p>
-          人狼、Among Us、歌枠など、
-          いろいろな配信予定を掲載します。
+          人狼・Among Us・歌枠・企画などを掲載します。
         </p>
       </div>
 
