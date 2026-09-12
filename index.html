@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>うめけん 配信スケジュール</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top, #25154a 0%, #0d0d16 45%, #08080d 100%);
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   "Noto Sans JP", sans-serif;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1100px, 94%);
+      margin: 0 auto;
+      padding: 45px 0 60px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header .small {
+      color: #a98cff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 6vw, 54px);
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      color: #aaa8b5;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .calendar-card {
+      background: rgba(20, 20, 31, 0.92);
+      border: 1px solid rgba(168, 130, 255, 0.3);
+      border-radius: 20px;
+      padding: 10px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100%;
+      height: 720px;
+      border: 0;
+      border-radius: 13px;
+      background: white;
+    }
+
+    .notice {
+      text-align: center;
+      color: #888795;
+      font-size: 12px;
+      margin-top: 20px;
+      line-height: 1.8;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 35px;
+      color: #777582;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 650px) {
+      .container {
+        width: 100%;
+        padding: 28px 10px 40px;
+      }
+
+      .calendar-card {
+        border-radius: 14px;
+        padding: 5px;
+      }
+
+      iframe {
+        height: 650px;
+      }
+
+      h1 {
+        font-size: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <header class="header">
+      <div class="small">UMEKEN</div>
+      <h1>STREAM SCHEDULE</h1>
+      <div class="subtitle">
+        うめけん 配信スケジュール
+      </div>
+    </header>
+
+    <section class="calendar-card">
+
+      <iframe
+        src="https://calendar.google.com/calendar/embed?src=589eb655b73cf456af1f6785374a69ebc99ae26cc5df0d868e1c48576ccf6a8b%40group.calendar.google.com&ctz=Asia%2FTokyo"
+        scrolling="no">
+      </iframe>
+
+    </section>
+
+    <div class="notice">
+      ※ 配信時間・内容は変更になる場合があります。<br>
+      最新の予定はこちらのページをご確認ください。
+    </div>
+
+    <footer class="footer">
+      UMEKEN STREAM SCHEDULE
+    </footer>
+
+  </main>
+
+</body>
+</html>
