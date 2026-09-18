@@ -4,7 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>うめけん 配信スケジュール</title>
-
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "fcfe81ef-af0b-4611-8cb7-7546e8f3e286",
+      serviceWorkerPath: "/umeken-schedule/OneSignalSDKWorker.js",
+      serviceWorkerParam: {
+        scope: "/umeken-schedule/"
+      }
+    });
+  });
+</script>
   <style>
     * {
       box-sizing: border-box;
