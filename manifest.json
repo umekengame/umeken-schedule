@@ -1,0 +1,10 @@
+{
+  "name": "うめけん配信・イベント予定",
+  "short_name": "うめけん予定",
+  "start_url": "/umeken-schedule/",
+  "scope": "/umeken-schedule/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#55bee9",
+  "description": "うめけんの配信・イベントスケジュール"
+}
