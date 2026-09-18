@@ -3,20 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>うめけん 配信スケジュール</title>
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "fcfe81ef-af0b-4611-8cb7-7546e8f3e286",
-      serviceWorkerPath: "/umeken-schedule/OneSignalSDKWorker.js",
-      serviceWorkerParam: {
-        scope: "/umeken-schedule/"
-      }
+  <title>うめけん配信・イベント予定</title>
+
+  <!-- OneSignal -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "fcfe81ef-af0b-4611-8cb7-7546e8f3e286",
+        serviceWorkerPath: "/umeken-schedule/OneSignalSDKWorker.js",
+        serviceWorkerParam: {
+          scope: "/umeken-schedule/"
+        }
+      });
     });
-  });
-</script>
+  </script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -90,6 +94,36 @@
       width: min(470px, 44vw);
       z-index: 1;
       filter: drop-shadow(0 16px 30px rgba(45, 120, 150, .18));
+    }
+
+    /* 通知エリア */
+    .notification-card {
+      margin-top: 22px;
+      padding: 24px 26px;
+      background: linear-gradient(135deg, #ffffff, #eaf9ff);
+      border: 2px solid #bdeafa;
+      border-radius: 22px;
+      box-shadow: 0 15px 35px rgba(62, 163, 202, .10);
+      text-align: center;
+    }
+
+    .notification-card h2 {
+      margin: 0 0 8px;
+      font-size: 21px;
+      color: #247da3;
+    }
+
+    .notification-card p {
+      margin: 0 0 16px;
+      color: #6c8996;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .notification-card .onesignal-customlink-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .section-title {
@@ -222,6 +256,14 @@
         opacity: .95;
       }
 
+      .notification-card {
+        padding: 20px 15px;
+      }
+
+      .notification-card h2 {
+        font-size: 18px;
+      }
+
       .today-calendar {
         height: 300px;
       }
@@ -238,6 +280,7 @@
 </head>
 
 <body>
+
   <div class="wrap">
 
     <section class="hero">
@@ -260,6 +303,22 @@
         src="b02＿背景透過.png"
         alt="うめけん"
         class="hero-img">
+
+    </section>
+
+
+    <!-- 通知登録 -->
+    <section class="notification-card">
+
+      <h2>🔔 配信・イベント予定を通知</h2>
+
+      <p>
+        新しい予定の追加や日時変更をスマホにお知らせします。<br>
+        通知が欲しい方だけ登録できます。
+      </p>
+
+      <div class="onesignal-customlink-container"></div>
+
     </section>
 
 
@@ -333,5 +392,6 @@
     </footer>
 
   </div>
+
 </body>
 </html>
