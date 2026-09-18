@@ -3,14 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>うめけん配信・イベント予定</title>
+
+  <!-- iPhone / PWA -->
+  <link rel="manifest" href="/umeken-schedule/manifest.json">
+  <meta name="theme-color" content="#55bee9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="うめけん予定">
 
   <!-- OneSignal -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
 
     OneSignalDeferred.push(async function(OneSignal) {
+
       await OneSignal.init({
         appId: "fcfe81ef-af0b-4611-8cb7-7546e8f3e286",
         serviceWorkerPath: "/umeken-schedule/OneSignalSDKWorker.js",
@@ -18,10 +27,157 @@
           scope: "/umeken-schedule/"
         }
       });
+
+      window.umekenOneSignal = OneSignal;
+
+      updateNotificationStatus();
+
+      OneSignal.Notifications.addEventListener(
+        "permissionChange",
+        function(permission) {
+          updateNotificationStatus();
+        }
+      );
+
+      OneSignal.User.PushSubscription.addEventListener(
+        "change",
+        function() {
+          updateNotificationStatus();
+        }
+      );
     });
+
+
+    function isIOS() {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    }
+
+
+    function isStandalone() {
+      return window.matchMedia("(display-mode: standalone)").matches ||
+             window.navigator.standalone === true;
+    }
+
+
+    async function enableNotifications() {
+
+      const status = document.getElementById("notification-status");
+      const button = document.getElementById("notification-button");
+
+      /* iPhoneでブラウザから開いている場合 */
+      if (isIOS() && !isStandalone()) {
+        document.getElementById("ios-guide").style.display = "block";
+        status.innerHTML =
+          "📱 iPhoneでは先に「ホーム画面に追加」が必要です。";
+        return;
+      }
+
+      if (!window.umekenOneSignal) {
+        status.innerHTML =
+          "⏳ 通知機能を読み込み中です。数秒後にもう一度押してください。";
+        return;
+      }
+
+      try {
+
+        button.disabled = true;
+        button.innerHTML = "確認中…";
+
+        const OneSignal = window.umekenOneSignal;
+
+        const supported =
+          await OneSignal.Notifications.isPushSupported();
+
+        if (!supported) {
+          status.innerHTML =
+            "⚠️ このブラウザではプッシュ通知を利用できません。";
+
+          button.disabled = false;
+          button.innerHTML = "🔔 通知を受け取る";
+          return;
+        }
+
+        /* すでに通知許可済み */
+        if (OneSignal.Notifications.permission) {
+
+          if (!OneSignal.User.PushSubscription.optedIn) {
+            await OneSignal.User.PushSubscription.optIn();
+          }
+
+          status.innerHTML =
+            "✅ 通知の登録が完了しています！";
+
+          button.innerHTML = "✓ 通知登録済み";
+          button.classList.add("registered");
+          return;
+        }
+
+        /* ブラウザの通知許可を直接表示 */
+        await OneSignal.Notifications.requestPermission();
+
+        if (OneSignal.Notifications.permission) {
+
+          if (!OneSignal.User.PushSubscription.optedIn) {
+            await OneSignal.User.PushSubscription.optIn();
+          }
+
+          status.innerHTML =
+            "✅ 通知の登録が完了しました！";
+
+          button.innerHTML = "✓ 通知登録済み";
+          button.classList.add("registered");
+
+        } else {
+
+          status.innerHTML =
+            "⚠️ 通知が許可されませんでした。ブラウザの通知設定を確認してください。";
+
+          button.disabled = false;
+          button.innerHTML = "🔔 通知を受け取る";
+        }
+
+      } catch (error) {
+
+        console.error("OneSignal error:", error);
+
+        status.innerHTML =
+          "⚠️ 通知登録でエラーが発生しました。ページを更新してもう一度お試しください。";
+
+        button.disabled = false;
+        button.innerHTML = "🔔 通知を受け取る";
+      }
+    }
+
+
+    async function updateNotificationStatus() {
+
+      if (!window.umekenOneSignal) return;
+
+      const OneSignal = window.umekenOneSignal;
+      const button = document.getElementById("notification-button");
+      const status = document.getElementById("notification-status");
+
+      if (!button || !status) return;
+
+      if (
+        OneSignal.Notifications.permission &&
+        OneSignal.User.PushSubscription.optedIn
+      ) {
+
+        button.innerHTML = "✓ 通知登録済み";
+        button.classList.add("registered");
+        button.disabled = true;
+
+        status.innerHTML =
+          "✅ 配信・イベント予定の通知を受け取ります。";
+      }
+    }
   </script>
 
+
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -32,15 +188,18 @@
                    "Noto Sans JP", sans-serif;
       color: #17364a;
       background:
-        radial-gradient(circle at top right, rgba(115, 214, 255, .30), transparent 30%),
-        linear-gradient(180deg, #ffffff 0%, #eefaff 100%);
+        radial-gradient(circle at top right, rgba(115,214,255,.30), transparent 30%),
+        linear-gradient(180deg,#ffffff 0%,#eefaff 100%);
     }
 
     .wrap {
-      width: min(1180px, 94%);
+      width: min(1180px,94%);
       margin: auto;
       padding: 24px 0 60px;
     }
+
+
+    /* HERO */
 
     .hero {
       position: relative;
@@ -49,9 +208,9 @@
       border-radius: 30px;
       padding: 55px;
       background:
-        linear-gradient(135deg, #ffffff 0%, #e8f9ff 60%, #c9f0ff 100%);
+        linear-gradient(135deg,#ffffff 0%,#e8f9ff 60%,#c9f0ff 100%);
       border: 1px solid #cfeef8;
-      box-shadow: 0 25px 60px rgba(73, 169, 205, 0.15);
+      box-shadow: 0 25px 60px rgba(73,169,205,.15);
       display: flex;
       align-items: center;
     }
@@ -71,7 +230,7 @@
     }
 
     h1 {
-      font-size: clamp(42px, 7vw, 76px);
+      font-size: clamp(42px,7vw,76px);
       line-height: .95;
       margin: 0;
       color: #16384e;
@@ -91,40 +250,89 @@
       position: absolute;
       right: -20px;
       bottom: -25px;
-      width: min(470px, 44vw);
+      width: min(470px,44vw);
       z-index: 1;
-      filter: drop-shadow(0 16px 30px rgba(45, 120, 150, .18));
+      filter: drop-shadow(0 16px 30px rgba(45,120,150,.18));
     }
 
-    /* 通知エリア */
+
+    /* 通知 */
+
     .notification-card {
       margin-top: 22px;
-      padding: 24px 26px;
-      background: linear-gradient(135deg, #ffffff, #eaf9ff);
+      padding: 28px;
+      text-align: center;
+      background: linear-gradient(135deg,#fff,#eaf9ff);
       border: 2px solid #bdeafa;
       border-radius: 22px;
-      box-shadow: 0 15px 35px rgba(62, 163, 202, .10);
-      text-align: center;
+      box-shadow: 0 15px 35px rgba(62,163,202,.10);
     }
 
     .notification-card h2 {
       margin: 0 0 8px;
-      font-size: 21px;
+      font-size: 22px;
       color: #247da3;
     }
 
     .notification-card p {
-      margin: 0 0 16px;
+      margin: 0 0 18px;
       color: #6c8996;
       font-size: 13px;
       line-height: 1.7;
     }
 
-    .notification-card .onesignal-customlink-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    #notification-button {
+      border: 0;
+      border-radius: 999px;
+      padding: 15px 32px;
+      background: #55bee9;
+      color: white;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 22px rgba(45,160,205,.25);
+      transition: .2s;
     }
+
+    #notification-button:hover {
+      transform: translateY(-2px);
+    }
+
+    #notification-button.registered {
+      background: #4bb58b;
+      cursor: default;
+    }
+
+    #notification-status {
+      margin-top: 13px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #527987;
+    }
+
+
+    /* iPhone説明 */
+
+    #ios-guide {
+      display: none;
+      margin: 18px auto 0;
+      max-width: 600px;
+      padding: 17px;
+      background: white;
+      border: 1px solid #bdeafa;
+      border-radius: 16px;
+      text-align: left;
+      color: #496b79;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    #ios-guide strong {
+      color: #247da3;
+    }
+
+
+    /* カレンダー */
 
     .section-title {
       margin: 38px 0 14px;
@@ -146,12 +354,12 @@
       border: 2px solid #aee7f8;
       border-radius: 24px;
       overflow: hidden;
-      box-shadow: 0 18px 45px rgba(62, 163, 202, .12);
+      box-shadow: 0 18px 45px rgba(62,163,202,.12);
     }
 
     .today-head {
       padding: 18px 22px;
-      background: linear-gradient(90deg, #dff7ff, #f5fdff);
+      background: linear-gradient(90deg,#dff7ff,#f5fdff);
       font-weight: 900;
       color: #277da0;
     }
@@ -168,7 +376,7 @@
       border: 1px solid #ccebf5;
       border-radius: 26px;
       overflow: hidden;
-      box-shadow: 0 22px 55px rgba(65, 160, 195, .12);
+      box-shadow: 0 22px 55px rgba(65,160,195,.12);
     }
 
     .calendar-bar {
@@ -176,7 +384,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: linear-gradient(90deg, #effbff, #dff6ff);
+      background: linear-gradient(90deg,#effbff,#dff6ff);
       border-bottom: 1px solid #d3eef6;
     }
 
@@ -196,9 +404,12 @@
       display: block;
     }
 
+
+    /* INFO */
+
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3,1fr);
       gap: 14px;
       margin-top: 24px;
     }
@@ -229,169 +440,257 @@
       font-size: 11px;
     }
 
-    @media (max-width: 760px) {
+
+    /* スマホ */
+
+    @media(max-width:760px) {
+
       .wrap {
-        width: 100%;
-        padding: 10px 10px 35px;
+        width:100%;
+        padding:10px 10px 35px;
       }
 
       .hero {
-        min-height: 430px;
-        padding: 30px 24px;
-        align-items: flex-start;
-      }
-
-      .hero-text {
-        max-width: 100%;
+        min-height:430px;
+        padding:30px 24px;
+        align-items:flex-start;
       }
 
       h1 {
-        font-size: 43px;
+        font-size:43px;
       }
 
       .hero-img {
-        width: 300px;
-        right: -60px;
-        bottom: -10px;
-        opacity: .95;
+        width:300px;
+        right:-60px;
+        bottom:-10px;
       }
 
       .notification-card {
-        padding: 20px 15px;
+        padding:22px 15px;
       }
 
-      .notification-card h2 {
-        font-size: 18px;
+      #notification-button {
+        width:100%;
+        max-width:360px;
       }
 
       .today-calendar {
-        height: 300px;
+        height:300px;
       }
 
       .month-calendar {
-        height: 680px;
+        height:680px;
       }
 
       .info-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:1fr;
       }
     }
+
   </style>
 </head>
 
+
 <body>
 
-  <div class="wrap">
+<div class="wrap">
 
-    <section class="hero">
 
-      <div class="hero-text">
-        <div class="tag">UMEKEN OFFICIAL</div>
+  <section class="hero">
 
-        <h1>
-          STREAM<br>
-          <span>SCHEDULE</span>
-        </h1>
+    <div class="hero-text">
 
-        <p>
-          うめけんのゲーム配信・企画・歌枠などの
-          最新スケジュールを掲載しています。
-        </p>
+      <div class="tag">
+        UMEKEN OFFICIAL
       </div>
 
-      <img
-        src="b02＿背景透過.png"
-        alt="うめけん"
-        class="hero-img">
-
-    </section>
-
-
-    <!-- 通知登録 -->
-    <section class="notification-card">
-
-      <h2>🔔 配信・イベント予定を通知</h2>
+      <h1>
+        STREAM<br>
+        <span>SCHEDULE</span>
+      </h1>
 
       <p>
-        新しい予定の追加や日時変更をスマホにお知らせします。<br>
-        通知が欲しい方だけ登録できます。
+        うめけんのゲーム配信・企画・歌枠などの
+        最新スケジュールを掲載しています。
       </p>
 
-      <div class="onesignal-customlink-container"></div>
-
-    </section>
-
-
-    <div class="section-title">
-      <small>NEXT STREAM</small>
-      <h2>今日〜直近の配信予定</h2>
     </div>
 
-    <section class="today-card">
+    <img
+      src="b02＿背景透過.png"
+      alt="うめけん"
+      class="hero-img">
 
-      <div class="today-head">
-        🎮 最新の配信予定
-      </div>
-
-      <iframe
-        class="today-calendar"
-        src="https://calendar.google.com/calendar/embed?src=589eb655b73cf456af1f6785374a69ebc99ae26cc5df0d868e1c48576ccf6a8b%40group.calendar.google.com&ctz=Asia%2FTokyo&mode=AGENDA&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0">
-      </iframe>
-
-    </section>
+  </section>
 
 
-    <div class="section-title">
-      <small>MONTHLY CALENDAR</small>
-      <h2>今月の配信予定</h2>
+  <!-- 通知 -->
+
+  <section class="notification-card">
+
+    <h2>
+      🔔 配信・イベント予定を通知
+    </h2>
+
+    <p>
+      新しい予定の追加や日時変更をスマホにお知らせします。<br>
+      通知が欲しい方だけ登録できます。
+    </p>
+
+    <button
+      id="notification-button"
+      onclick="enableNotifications()">
+
+      🔔 通知を受け取る
+
+    </button>
+
+    <div id="notification-status"></div>
+
+
+    <div id="ios-guide">
+
+      <strong>
+        🍎 iPhoneをお使いの方
+      </strong>
+
+      <br><br>
+
+      iPhoneでは最初にこのサイトを
+      <strong>ホーム画面へ追加</strong>
+      する必要があります。
+
+      <br><br>
+
+      ① ブラウザの「共有」をタップ<br>
+      ②「ホーム画面に追加」を選択<br>
+      ③ ホーム画面に追加された「うめけん予定」を開く<br>
+      ④ もう一度「🔔 通知を受け取る」をタップ<br>
+      ⑤「許可」を選択
+
     </div>
 
-    <section class="calendar-card">
-
-      <div class="calendar-bar">
-        <strong>📅 UMEKEN CALENDAR</strong>
-        <span class="auto">自動更新</span>
-      </div>
-
-      <iframe
-        class="month-calendar"
-        src="https://calendar.google.com/calendar/embed?src=589eb655b73cf456af1f6785374a69ebc99ae26cc5df0d868e1c48576ccf6a8b%40group.calendar.google.com&ctz=Asia%2FTokyo&mode=MONTH&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0">
-      </iframe>
-
-    </section>
+  </section>
 
 
-    <section class="info-grid">
+  <!-- 直近 -->
 
-      <div class="info">
-        <strong>📅 随時更新</strong>
-        <p>
-          配信予定が決まり次第、
-          Googleカレンダーから自動反映されます。
-        </p>
-      </div>
+  <div class="section-title">
 
-      <div class="info">
-        <strong>⏰ 時間変更あり</strong>
-        <p>
-          配信時間や内容は変更になる場合があります。
-        </p>
-      </div>
+    <small>
+      NEXT STREAM
+    </small>
 
-      <div class="info">
-        <strong>🎮 配信内容</strong>
-        <p>
-          人狼・Among Us・歌枠・企画などを掲載します。
-        </p>
-      </div>
-
-    </section>
-
-    <footer>
-      © UMEKEN STREAM SCHEDULE
-    </footer>
+    <h2>
+      今日〜直近の配信予定
+    </h2>
 
   </div>
+
+
+  <section class="today-card">
+
+    <div class="today-head">
+      🎮 最新の配信予定
+    </div>
+
+    <iframe
+      class="today-calendar"
+      src="https://calendar.google.com/calendar/embed?src=589eb655b73cf456af1f6785374a69ebc99ae26cc5df0d868e1c48576ccf6a8b%40group.calendar.google.com&ctz=Asia%2FTokyo&mode=AGENDA&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0">
+    </iframe>
+
+  </section>
+
+
+  <!-- 月間 -->
+
+  <div class="section-title">
+
+    <small>
+      MONTHLY CALENDAR
+    </small>
+
+    <h2>
+      今月の配信予定
+    </h2>
+
+  </div>
+
+
+  <section class="calendar-card">
+
+    <div class="calendar-bar">
+
+      <strong>
+        📅 UMEKEN CALENDAR
+      </strong>
+
+      <span class="auto">
+        自動更新
+      </span>
+
+    </div>
+
+
+    <iframe
+      class="month-calendar"
+      src="https://calendar.google.com/calendar/embed?src=589eb655b73cf456af1f6785374a69ebc99ae26cc5df0d868e1c48576ccf6a8b%40group.calendar.google.com&ctz=Asia%2FTokyo&mode=MONTH&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0">
+    </iframe>
+
+  </section>
+
+
+  <section class="info-grid">
+
+    <div class="info">
+
+      <strong>
+        📅 随時更新
+      </strong>
+
+      <p>
+        配信予定が決まり次第、
+        Googleカレンダーから自動反映されます。
+      </p>
+
+    </div>
+
+
+    <div class="info">
+
+      <strong>
+        ⏰ 時間変更あり
+      </strong>
+
+      <p>
+        配信時間や内容は変更になる場合があります。
+      </p>
+
+    </div>
+
+
+    <div class="info">
+
+      <strong>
+        🎮 配信内容
+      </strong>
+
+      <p>
+        人狼・Among Us・歌枠・企画などを掲載します。
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <footer>
+    © UMEKEN STREAM SCHEDULE
+  </footer>
+
+
+</div>
 
 </body>
 </html>
